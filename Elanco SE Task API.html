@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elanco SE Task by Dijon Ajeti</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!--below is some basic CSS to style the webpage, I have chosen suttle colours as to not irratate the user's eye, however I also used
+    colors which show importance for the bits of code I wish the user to pay attention to.-->
+  <style>
+    div {
+      vertical-align: center;
+      margin: auto;
+      padding: 10px;
+      width: 50%;
+      text-align: center;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      width: 100%;
+    }
+
+    td,
+    th {
+      text-align: right;
+      padding: 15px;
+      border: 1px sold black;
+    }
+
+    #commonTrends {
+      background: white;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+
+    }
+  
+    th,
+    td {
+      border: solid 1px rgb(5, 4, 4);
+      padding: 15px;
+      vertical-align: center;
+    }
+
+   
+    td {
+      color: black;
+      font-weight: 600;
+    }
+   
+
+
+    th{
+      background-color: blue;
+      text-align: center;
+      color:white ;
+    } 
+
+    body{
+      background-color: lightblue;
+    }
+
+    p{
+      color: red;
+    }
+
+    label {
+      color: blue;
+    }
+
+    
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+
+  <script>
+    $(document).ready(function() {
+
+     
+      $("#myInput").on("keyup",
+      function() {
+        var value = 
+        $(this).val().toLowerCase();
+        $("#table-data tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+         
+    });
+    });
+
+
+      $.ajax({
+        type : "GET",
+        url : "https://engineering-task.elancoapps.com/api/applications",
+        data : "[]",
+
+       
+
+       success: function(response) {
+       $.each(response, function(key, value){
+        $("#applications").append( '<option id="options"  value=' + key +'>' + value + '</option>');
+       });
+      }
+    });
+
+    $.ajax({
+        type : "GET",
+        url : "https://engineering-task.elancoapps.com/api/resources",
+        data : "[]",
+
+       
+
+       success: function(response) {
+       $.each(response, function(key, value){
+        $("#resource").append( '<option id="options"  value=' + key +'>' + value + '</option>');
+       });
+      }
+    });
+
+
+
+  $('#applications').change( function () {
+    let chosenApplicationOfChoice = $(this).children("option:selected").text();
+    console.log(chosenApplicationOfChoice)
+
+  $.ajax({
+    type : "GET",
+        url : "https://engineering-task.elancoapps.com/api/applications/" + chosenApplicationOfChoice,
+        data : "[]",
+
+      success: function(data) {
+       $.each(data, function(key, value){
+        $("#table-data").append("<tr> <td id='tabledata-search'>"+value.ConsumedQuantity+"</td><td id='search'>"+
+          value.Cost+"</td> <td>"+value.Date+"</td><td>"+value.ResourceLocation+"</td></tr>");
+          
+       });
+      }
+    });
+
+    $("#applications").change(function(){
+      $("#table-data").empty();
+      $("#Tags").empty();
+    });
+   });
+
+   
+  $('#resource').change( function () {
+    let chosenResourceOfChoice = $(this).children("option:selected").text();
+    console.log(chosenResourceOfChoice)
+
+  $.ajax({
+    type : "GET",
+        url : "https://engineering-task.elancoapps.com/api/resources/" + chosenResourceOfChoice,
+        data : "[]",
+
+      success: function(data) {
+       $.each(data, function(key, value){
+        $("#table-data").append("<tr> <td id='tabledata-search'>"+value.ConsumedQuantity+"</td><td id='search'>"+
+          value.Cost+"</td> <td>"+value.Date+"</td><td>"+value.ResourceLocation+"</td></tr>");
+       });
+      }
+    });
+
+    $("#resource").change(function(){
+      $("#table-data").empty();
+      $("#0").empty();
+    });
+   });
+
+   
+});
+
+  </script>
+</head>
+<div>
+<body>
+    <h2>Elanco Data Viewer</h2>
+
+
+    <p>This web page uses Elanco's API to return application's and resources of those
+        applications once the user selects the desired application. </p>
+
+
+
+    <form action="/action_page.php">
+      <label for="applications">Select application:</label>
+      <select name="Applications" id="applications">
+        <option value="Choose here">Choose here</option>
+      </select>
+    </form>
+
+    <form action="/action_page.php">
+        <label for="resource">Select a resource:</label>
+       <select name="Resource" id="resource">
+        <option value="Choose here">Choose here</option>
+       </select>
+    </form>
+
+     
+
+
+    <input id="myInput" type="text" placeholder="Search.."> <input id='search' type="button" value="Search">
+
+    
+        <table id="commonTrends">
+      <tr>
+        <th class="quantity">Consumed quantity</th>
+        <th class="cost">Cost</th>
+        <th class="date">Date</th>
+        <th class="resourcelocation">Resource Location</th>
+      </tr>
+      
+
+      <tbody id="table-data">
+        
+        
+      </tbody>
+    </table>
+    </div>
+</body>
+
+</html>
